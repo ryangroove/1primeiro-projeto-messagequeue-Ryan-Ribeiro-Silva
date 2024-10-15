@@ -26,7 +26,7 @@ public class ConsumerBrokerImpl implements Consumer {
         message.addConsumption(this);
 
         try {
-            if (message.isExperied()) {
+            if (message.isExpired()) {
                 throw new IllegalArgumentException("Message: " + message.toString() + "\nExpired in: " + message.getCreatedAt().plusMinutes(5));
             }
 
@@ -51,7 +51,7 @@ public class ConsumerBrokerImpl implements Consumer {
         System.out.println("Producer: " + message.getProducer().name());
         System.out.println("CreatedAt: " + message.getCreatedAt());
         System.out.println("Consumed: " + message.isConsumed());
-        System.out.println("Expired: " + message.isExperied());
+        System.out.println("Expired: " + message.isExpired());
         System.out.println("===============================================================");
     }
 }

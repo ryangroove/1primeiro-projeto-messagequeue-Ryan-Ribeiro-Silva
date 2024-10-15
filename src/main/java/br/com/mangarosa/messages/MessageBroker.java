@@ -3,7 +3,6 @@ package br.com.mangarosa.messages;
 import br.com.mangarosa.messages.interfaces.Consumer;
 import br.com.mangarosa.messages.interfaces.MessageRepository;
 import br.com.mangarosa.messages.interfaces.Topic;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class MessageBroker {
-
     private final Map<String, Topic> topics;
     private final MessageRepository repository;
     private final ScheduledExecutorService scheduleAtFixedRate;
@@ -26,8 +24,9 @@ public class MessageBroker {
     }
 
     public void createTopic(Topic topic){
-        if(topics.containsKey(topic.name()))
-            throw new IllegalArgumentException("The topic name already exists");
+        if(topics.containsKey(topic.name())) {
+            return;  // Tópico já existe, então não faça nada
+        }
         this.topics.put(topic.name(), topic);
     }
 
@@ -59,18 +58,24 @@ public class MessageBroker {
         return this.topics.get(topic);
     }
 
+    public Map<String, Topic> getTopics() {
+        return topics;
+    }
+
     public void notifyConsumers(){
         Runnable notifyTask = () -> {
             topics.keySet().forEach(key -> {
-                List<Message> messages = repository
-                        .getAllNotConsumedMessagesByTopic(key);
-
+                List<Message> messages = repository.getAllNotConsumedMessagesByTopic(key);
                 if(Objects.nonNull(messages)){
-
+                    // Verificar e descartar mensagens expiradas
+                    messages.removeIf(Message::isExpired);
+                    messages.forEach(message -> {
+                        Topic topic = topics.get(key);
+                        topic.consumers().forEach(consumer -> consumer.consume(message));
+                    });
                 }
             });
         };
-        ScheduledFuture<?> scheduledFuture = scheduleAtFixedRate
-                .scheduleAtFixedRate(notifyTask, 2, 1, TimeUnit.MINUTES);
+        ScheduledFuture<?> scheduledFuture = scheduleAtFixedRate.scheduleAtFixedRate(notifyTask, 2, 1, TimeUnit.MINUTES);
     }
 }

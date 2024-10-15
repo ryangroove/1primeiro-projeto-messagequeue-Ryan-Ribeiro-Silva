@@ -29,7 +29,7 @@ public class InMemoryMessageRepositoryImpl implements MessageRepository {
 
         for (Message message : messages) {
             if (Objects.equals(message.getId(), messageId.toString())) {
-                if (message.isExperied()) {
+                if (message.isExpired()) {
                     throw new IllegalStateException("Cannot consume expired message");
                 }
                 message.setConsumed(true);
@@ -46,7 +46,7 @@ public class InMemoryMessageRepositoryImpl implements MessageRepository {
         }
 
         return messages.stream()
-                .filter(message -> !message.isConsumed() && !message.isExperied())
+                .filter(message -> !message.isConsumed() && !message.isExpired())
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +59,7 @@ public class InMemoryMessageRepositoryImpl implements MessageRepository {
 
         return messages.stream()
                 .filter(Message::isConsumed)
-                .filter(message -> !message.isExperied())
+                .filter(message -> !message.isExpired())
                 .collect(Collectors.toList());
     }
 }

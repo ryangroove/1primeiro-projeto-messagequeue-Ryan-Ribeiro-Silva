@@ -2,7 +2,6 @@ package br.com.mangarosa.messages;
 
 import br.com.mangarosa.messages.interfaces.Consumer;
 import br.com.mangarosa.messages.interfaces.Producer;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -15,7 +14,6 @@ import java.util.Map;
  * Messagem para ser processada
  */
 public class Message implements Serializable {
-
     private String id;
     private Producer producer;
     private final LocalDateTime createdAt;
@@ -29,7 +27,6 @@ public class Message implements Serializable {
         this.createdAt = LocalDateTime.now();
         this.consumptionList = new ArrayList<>();
     }
-
 
     /**
      * Retorna o id da mensagem baseado na data de criação
@@ -99,7 +96,6 @@ public class Message implements Serializable {
         if(message == null || message.isBlank() || message.isEmpty())
             throw new IllegalArgumentException("The message content can't be null or empty or blank");
         this.message = message;
-
     }
 
     /**
@@ -125,7 +121,7 @@ public class Message implements Serializable {
         return map;
     }
 
-    public boolean isExperied() {
+    public boolean isExpired() {
         return this.createdAt.isBefore(LocalDateTime.now().minusMinutes(5));
     }
 }
