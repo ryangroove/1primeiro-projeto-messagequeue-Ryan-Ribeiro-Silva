@@ -1,6 +1,5 @@
 package br.com.mangarosa.messages.producers;
 
-import br.com.mangarosa.messages.Message;
 import br.com.mangarosa.messages.MessageBroker;
 import br.com.mangarosa.messages.factory.MessageFactory;
 import br.com.mangarosa.messages.interfaces.Producer;

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class MessageBroker {
@@ -66,7 +65,7 @@ public class MessageBroker {
         Runnable notifyTask = () -> {
             topics.keySet().forEach(key -> {
                 List<Message> messages = repository.getAllNotConsumedMessagesByTopic(key);
-                if(Objects.nonNull(messages)){
+                if (Objects.nonNull(messages)) {
                     // Verificar e descartar mensagens expiradas
                     messages.removeIf(Message::isExpired);
                     messages.forEach(message -> {
@@ -76,6 +75,6 @@ public class MessageBroker {
                 }
             });
         };
-        ScheduledFuture<?> scheduledFuture = scheduleAtFixedRate.scheduleAtFixedRate(notifyTask, 2, 1, TimeUnit.MINUTES);
+        scheduleAtFixedRate.scheduleAtFixedRate(notifyTask, 2, 1, TimeUnit.MINUTES);
     }
 }
